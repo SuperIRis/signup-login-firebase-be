@@ -1,21 +1,21 @@
-const {GraphQLServer} = require('graphql-yoga');
+const dotenv = require('dotenv');
+dotenv.config();
+const admin = require('firebase-admin');
+const functions = require ('firebase-functions');
+const express = require('express');
+const {ApolloServer} = require('apollo-server-express');
+const typeDefs = require('./users/typeDefs');
+admin.initializeApp(functions.config().firebase);
+const resolvers = require('./users/resolvers')(admin);
+const {addUser} = require('./users/usersApi');
 
-const typeDefs = `
-    type Query {
-        info:String!
-    }
-    `;
+const app = express();
+const server = new ApolloServer({typeDefs, resolvers, playground:true, introspection:true});
 
-const resolvers = {
-    Query:{
-        info: ()=>'This is info'
-    }
-}
+server.applyMiddleware({app, path:'/', cors:true})
+exports.graphql = functions.https.onRequest(app);
 
-const server = new GraphQLServer({
-    typeDefs,
-    resolvers
-})
-
-server.start(()=>console.log('Server is running in http://localhost:4000'));
-
+functions.auth.user().onCreate(user=>{
+    console.log(user)
+    addUser(admin, {email: user.data.email, username:user.data.username})
+});
