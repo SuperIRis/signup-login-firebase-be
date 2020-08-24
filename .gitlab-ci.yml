@@ -2,10 +2,10 @@ image: node:12.13.0-alpine
 before_script:
   - npm install -g firebase-tools
   - npm install
-unit-tests:
-  stage: test
-  script:
-    - npm run-script test
+#unit-tests:
+ # stage: test
+  #script:
+   # - npm run-script test
 build:
   stage: build
   script:
