@@ -43,8 +43,8 @@ module.exports = (admin)=>{
         },
       },
       Mutation: {
-        addUser: async (_, { username, fullName, email, country }) => {
-          return addUser(admin, { username, fullName, email, country });
+        addUser: async (_, data) => {
+          return addUser(admin, data);
         },
         deleteUser: async (_, { id, username, email}) => {
           try {

@@ -1,11 +1,14 @@
 const { ApolloError, ValidationError } = require("apollo-server-express");
-const uuid = require("uuid");
+//const uuid = require("uuid");
 const moment = require("moment");
 const errorsDictionary = require("./errorsDictionary");
 
+function getUidFromToken (admin, idToken){
+  return admin.auth().verifyIdToken(idToken);
+}
+
 module.exports.addUser = async (admin, data) => {
-    console.log('add user', data)
-    const { username, fullName, email, country } = data;
+  const { username, fullName, email, country, id } = data;
   try {
     //Check that email is not registered yet
     const existantEmailDoc = await admin.firestore().collection("users").where("email", "==", email).get();
@@ -18,7 +21,6 @@ module.exports.addUser = async (admin, data) => {
       throw new ValidationError(errorsDictionary.USERNAME_ALREADY_IN_USE);
     }
     //if it doesn´t exist, create users
-    const id = uuid.v4();
     const creationDate = moment().toISOString();
 
     await admin.firestore().collection("users").doc(id).set({ id, username, fullName, email, country, creationDate });

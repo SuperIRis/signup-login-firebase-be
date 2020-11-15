@@ -13,7 +13,7 @@ build:
 staging:
   stage: deploy
   script: 
-    - npm run-script start
+    - firebase deploy
   only:
     - staging
   environment:

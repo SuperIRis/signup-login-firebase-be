@@ -11,6 +11,7 @@ module.exports = [
     }
 
     type User {
+      id:String
       username: String
       fullName: String
       email: String!
@@ -19,12 +20,12 @@ module.exports = [
     }
     type Query {
       users: [User]
-      user: User
+      user(id:String!): User
       getUserByEmail(email: String!): User
       getUserByUsername(username: String!): User
     }
     type Mutation {
-      addUser(fullName: String!, username: String!, email: String!, country: String!): User
+      addUser(id:String!, fullName: String!, username: String!, email: String!, country: String!): User
       deleteUser(id: String, username: String, email: String): RemoveResponse
     }
   `,
