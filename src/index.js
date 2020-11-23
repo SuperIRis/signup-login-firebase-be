@@ -5,6 +5,7 @@ const express = require('express');
 const {ApolloServer} = require('apollo-server-express');
 const typeDefs = require('./users/typeDefs');
 admin.initializeApp();
+admin.firestore().settings({ignoreUndefinedProperties:true});
 const resolvers = require('./users/resolvers')(admin);
 const {addUser} = require('./users/usersApi');
 

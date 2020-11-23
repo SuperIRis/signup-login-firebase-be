@@ -1,14 +1,15 @@
 const { ApolloError, ValidationError } = require('apollo-server-express');
-const { DateTimeResolver } = require('graphql-scalars');
+const { DateTimeResolver, DateResolver } = require('graphql-scalars');
 const uuid = require('uuid');
 const moment = require ('moment');
 const errorsDictionary = require('./errorsDictionary');
-const { addUser } = require("./usersApi");
+const { addUser, deleteUser } = require("./usersApi");
 
 
 module.exports = (admin)=>{
     return {
       DateTime: DateTimeResolver,
+      Date: DateResolver,
       Query: {
         users: async () => {
           const users = await admin.firestore().collection("users").get();
@@ -16,7 +17,7 @@ module.exports = (admin)=>{
         },
         user: async (_, { id }) => {
           try {
-            const userDoc = await admin.firestore.doc(`users/${id}`).get();
+            const userDoc = await admin.firestore().doc(`users/${id}`).get();
             const user = userDoc.data();
             return user || new ValidationError(errorsDictionary.USER_UNKNOWN);
           } catch (error) {
@@ -46,47 +47,8 @@ module.exports = (admin)=>{
         addUser: async (_, data) => {
           return addUser(admin, data);
         },
-        deleteUser: async (_, { id, username, email}) => {
-          try {
-            if(id){
-            const deleteSuccess = await db.collection("users").doc(id).delete();
-            }
-            else if(username){
-            const existantUsernameDoc = await admin
-                .firestore()
-                .collection("users")
-                .where("username", "==", username)
-                .get();
-            if (existantUsernameDoc.empty) {
-                throw new ValidationError(errorsDictionary.USER_UNKNOWN);
-            }
-            else{
-                existantUsernameDoc.forEach(function (doc) {
-                    doc.ref.delete();
-                });
-            }
-            }
-            else if (email) {
-            const existantUsernameDoc = await admin
-                .firestore()
-                .collection("users")
-                .where("email", "==", email)
-                .get();
-            if (existantUsernameDoc.empty) {
-                throw new ValidationError(errorsDictionary.USER_UNKNOWN);
-            } else {
-                existantUsernameDoc.forEach(function (doc) {
-                doc.ref.delete();
-                });
-            }
-            }
-            else{
-                throw new ValidationError(errorsDictionary.MISSING_DATA);
-            }
-            return {id, username, email};
-          } catch (error) {
-            throw new ApolloError(error);
-          }
+        deleteUser: async (_, data) => {
+          return deleteUser(admin, data);
         },
       },
     };

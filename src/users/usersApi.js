@@ -8,7 +8,8 @@ function getUidFromToken (admin, idToken){
 }
 
 module.exports.addUser = async (admin, data) => {
-  const { username, fullName, email, country, id } = data;
+
+  const { id, email, fullName, username, country, socialId, providerId, birthDate } = data;
   try {
     //Check that email is not registered yet
     const existantEmailDoc = await admin.firestore().collection("users").where("email", "==", email).get();
@@ -22,12 +23,40 @@ module.exports.addUser = async (admin, data) => {
     }
     //if it doesn´t exist, create users
     const creationDate = moment().toISOString();
-
-    await admin.firestore().collection("users").doc(id).set({ id, username, fullName, email, country, creationDate });
+    const birthDateFormatted = moment(birthDate).toISOString();
+    console.log('saving!!!--------', birthDate)
+    await admin
+      .firestore()
+      .collection("users")
+      .doc(id)
+      .set({
+        id,
+        email,
+        fullName,
+        username,
+        country,
+        socialId,
+        providerId,
+        birthDate: birthDate,
+        creationDate,
+      });
     const userDoc = await admin.firestore().doc(`users/${id}`).get();
     const user = userDoc.data();
     return user || new ValidationError(errorsDictionary.SERVER_ERROR);
   } catch (error) {
+    console.log('throw new apollo', error)
     throw new ApolloError(error);
   }
 };
+
+module.exports.deleteUser = async (admin, data) =>{
+  const {id} = data;
+  try {
+    const userDoc = await admin.firestore().doc(`users/${id}`).delete();
+    return userDoc || new ValidationError(errorsDictionary.SERVER_ERROR);
+  }
+  catch{
+    throw new ApolloError(error);
+  }
+}
+
