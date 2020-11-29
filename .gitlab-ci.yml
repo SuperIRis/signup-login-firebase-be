@@ -8,10 +8,10 @@ image: node:12.13.0-alpine
 before_script:
   - npm install -g firebase-tools
   - npm install
-build:
-  stage: build
-  script:
-    - npm run-script start
+#build:
+ # stage: build
+  #script:
+   # - npm run-script start
 staging:
   stage: deploy
   script: 
