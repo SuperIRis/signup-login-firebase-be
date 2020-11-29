@@ -13,7 +13,10 @@ module.exports = (admin)=>{
       Query: {
         users: async () => {
           const users = await admin.firestore().collection("users").get();
-          return users.docs.map((user) => user.data());
+          const usersData = users.docs.map((user) => {
+            return {id: user.id, ...user.data()}
+          });
+          return usersData
         },
         user: async (_, { id }) => {
           try {

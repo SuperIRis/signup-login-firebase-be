@@ -23,14 +23,11 @@ module.exports.addUser = async (admin, data) => {
     }
     //if it doesn´t exist, create users
     const creationDate = moment().toISOString();
-    const birthDateFormatted = moment(birthDate).toISOString();
-    console.log('saving!!!--------', birthDate)
     await admin
       .firestore()
       .collection("users")
       .doc(id)
       .set({
-        id,
         email,
         fullName,
         username,
@@ -53,7 +50,7 @@ module.exports.deleteUser = async (admin, data) =>{
   const {id} = data;
   try {
     const userDoc = await admin.firestore().doc(`users/${id}`).delete();
-    return userDoc || new ValidationError(errorsDictionary.SERVER_ERROR);
+    return userDoc ? {id, ...userDoc} : new ValidationError(errorsDictionary.SERVER_ERROR);
   }
   catch{
     throw new ApolloError(error);

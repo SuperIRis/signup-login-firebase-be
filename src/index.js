@@ -35,7 +35,3 @@ server.applyMiddleware({
 });
 
 exports.graphql = functions.https.onRequest(app);
-exports.onAuth = functions.auth.user().onCreate(user=>{
-    console.log(user)
-    addUser(admin, {email: user.email, username:user.username})
-});

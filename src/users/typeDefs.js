@@ -6,7 +6,7 @@ module.exports = [
   DateTypeDefinition,
   gql`
     type User {
-      id:String
+      id:ID!
       username: String
       fullName: String
       email: String!
@@ -23,15 +23,15 @@ module.exports = [
     }
 
     type Query {
-      users: [User]
-      user(id:String!): User
+      users: [User!]!
+      user(id:ID!): User
       getUserByEmail(email: String!): User
       getUserByUsername(username: String!): User
     }
     
     type Mutation {
-      addUser(id:String!, fullName: String!, username: String!, email: String!, country: String!, socialId:String, providerId:String, birthDate:Date): User
-      deleteUser(id: String!): User
+      addUser(id:ID!, fullName: String!, username: String!, email: String!, country: String!, socialId:String, providerId:String, birthDate:Date): User
+      deleteUser(id: ID!): User
     }
   `,
 ];
