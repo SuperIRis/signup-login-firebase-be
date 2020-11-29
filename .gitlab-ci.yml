@@ -4,8 +4,10 @@ before_script:
   - npm install
 #unit-tests:
  # stage: test
-  #script:
-   # - npm run-script test
+image: node:12.13.0-alpine
+before_script:
+  - npm install -g firebase-tools
+  - npm install
 build:
   stage: build
   script:
@@ -22,7 +24,7 @@ staging:
 production:
   stage: deploy
   script:
-    - npm run-script start
+    - npm run-script deploy
   only:
     - master
   environment:
