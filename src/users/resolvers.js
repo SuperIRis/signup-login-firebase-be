@@ -1,10 +1,11 @@
 const { ApolloError, ValidationError } = require('apollo-server-express');
 const { DateTimeResolver, DateResolver } = require('graphql-scalars');
+const { requireUser } = require('../auth');
 const uuid = require('uuid');
 const moment = require ('moment');
 const errorsDictionary = require('./errorsDictionary');
 const { addUser, deleteUser } = require("./usersApi");
-
+const { validateToken, verifyCookie } = require("../auth");
 
 module.exports = (admin)=>{
     return {
@@ -24,6 +25,23 @@ module.exports = (admin)=>{
             const user = userDoc.data();
             return user || new ValidationError(errorsDictionary.USER_UNKNOWN);
           } catch (error) {
+            console.log('nope! we are not doing this', id)
+            throw new ApolloError(error);
+          }
+        },
+        currentUser: async (_, {idToken}, context)=>{
+          try {
+            console.log('hello!, looking for', idToken)
+            console.log('context', context)
+            const userAuth = await verifyCookie(idToken);
+            console.log(userAuth);
+            //return user || new ValidationError(errorsDictionary.FAILED_AUTH);
+            const userDoc = await admin.firestore().doc(`users/${userAuth.user_id}`).get();
+            const user = userDoc.data();
+            console.log(user);
+            return user || new ValidationError(errorsDictionary.USER_UNKNOWN);
+          } catch (error) {
+            console.log("nope! we are not doing this");
             throw new ApolloError(error);
           }
         },
@@ -47,11 +65,13 @@ module.exports = (admin)=>{
         },
       },
       Mutation: {
-        addUser: async (_, data) => {
-          return addUser(admin, data);
+        addUser: async (_, args, context) => {
+          //return requireUser(args, context, addUser);
+          return addUser(args, context);
         },
-        deleteUser: async (_, data) => {
-          return deleteUser(admin, data);
+        deleteUser: async (_, args, context) => {
+          return requireUser(args, context, deleteUser);
+          return deleteUser(args);
         },
       },
     };

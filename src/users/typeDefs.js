@@ -24,13 +24,14 @@ module.exports = [
 
     type Query {
       users: [User!]!
-      user(id:ID!): User
+      user(id:ID): User
+      currentUser(idToken:String!): User
       getUserByEmail(email: String!): User
       getUserByUsername(username: String!): User
     }
     
     type Mutation {
-      addUser(id:ID!, fullName: String!, username: String!, email: String!, country: String!, socialId:String, providerId:String, birthDate:Date): User
+      addUser(fullName: String!, username: String!, email: String!, country: String!, socialId:String, birthDate:Date): User
       deleteUser(id: ID!): User
     }
   `,

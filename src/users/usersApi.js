@@ -1,5 +1,6 @@
 const { ApolloError, ValidationError } = require("apollo-server-express");
 //const uuid = require("uuid");
+const admin = require("firebase-admin");
 const moment = require("moment");
 const errorsDictionary = require("./errorsDictionary");
 
@@ -7,9 +8,10 @@ function getUidFromToken (admin, idToken){
   return admin.auth().verifyIdToken(idToken);
 }
 
-module.exports.addUser = async (admin, data) => {
-
-  const { id, email, fullName, username, country, socialId, providerId, birthDate } = data;
+module.exports.addUser = async (data, context) => {
+  const { email, fullName, username, country, socialId, birthDate } = data;
+  const { uid } = context;
+  const providerId = context.firebase.sign_in_provider;
   try {
     //Check that email is not registered yet
     const existantEmailDoc = await admin.firestore().collection("users").where("email", "==", email).get();
@@ -26,7 +28,7 @@ module.exports.addUser = async (admin, data) => {
     await admin
       .firestore()
       .collection("users")
-      .doc(id)
+      .doc(uid)
       .set({
         email,
         fullName,
@@ -37,7 +39,7 @@ module.exports.addUser = async (admin, data) => {
         birthDate: birthDate,
         creationDate,
       });
-    const userDoc = await admin.firestore().doc(`users/${id}`).get();
+    const userDoc = await admin.firestore().doc(`users/${uid}`).get();
     const user = userDoc.data();
     return user || new ValidationError(errorsDictionary.SERVER_ERROR);
   } catch (error) {
@@ -46,7 +48,7 @@ module.exports.addUser = async (admin, data) => {
   }
 };
 
-module.exports.deleteUser = async (admin, data) =>{
+module.exports.deleteUser = async (data) =>{
   const {id} = data;
   try {
     const userDoc = await admin.firestore().doc(`users/${id}`).delete();
@@ -56,4 +58,14 @@ module.exports.deleteUser = async (admin, data) =>{
     throw new ApolloError(error);
   }
 }
+// const functions = require("firebase-functions");
+// module.exports.getCurrentUser = async (admin, data)=>{
+//   firebase.auth().onAuthStateChanged(function (user) {
+//     if (user) {
+//       // User is signed in.
+//     } else {
+//       // No user is signed in.
+//     }
+//   });
+// }
 
