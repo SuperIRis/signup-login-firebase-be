@@ -87,7 +87,16 @@ const verifyCookie = (verifySessionCookie)=>{
 }
 
 module.exports.requireUser = (args, context, resolverAction) => {
-  if (!context && !context.uid) {
+  if (context && context.uid) {
+    return resolverAction(args, context);
+  }
+  else{
+      throw new Error(errorsDictionary.USER_UNKNOWN);
+  }
+};
+
+module.exports.requireGuestUser = (args, context, resolverAction) => {
+  if (!context || !context.uid) {
     return resolverAction(args, context);
   }
   else{
