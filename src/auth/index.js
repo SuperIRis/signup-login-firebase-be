@@ -12,7 +12,7 @@ function validateToken(token){
     return admin.auth().verifyIdToken(token);
 }
 
-module.exports.getContext = async ({ req, res }) => {
+async function getContext ({ req, res }) {
     
     const chomp = req.cookies.chomp || "";
     console.log('check chomp:\n', req.cookies)
@@ -67,7 +67,7 @@ module.exports.getContext = async ({ req, res }) => {
     return user;
 };
 
-const setUserCookie = (idToken)=>{
+function setUserCookie (idToken){
     const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
     return admin
     .auth()
@@ -75,7 +75,7 @@ const setUserCookie = (idToken)=>{
     
 }
 
-const verifyCookie = (verifySessionCookie)=>{
+function verifyCookie (verifySessionCookie){
     return admin
       .auth()
       .verifySessionCookie(verifySessionCookie, true /** checkRevoked */)
@@ -86,7 +86,7 @@ const verifyCookie = (verifySessionCookie)=>{
       });
 }
 
-module.exports.requireUser = (args, context, resolverAction) => {
+function requireUser (args, context, resolverAction) {
   if (context && context.uid) {
     return resolverAction(args, context);
   }
@@ -95,7 +95,7 @@ module.exports.requireUser = (args, context, resolverAction) => {
   }
 };
 
-module.exports.requireGuestUser = (args, context, resolverAction) => {
+function requireGuestUser (args, context, resolverAction) {
   if (!context || !context.uid) {
     return resolverAction(args, context);
   }
@@ -104,5 +104,13 @@ module.exports.requireGuestUser = (args, context, resolverAction) => {
   }
 };
 
+//returns promise after validating a token
 module.exports.validateToken = validateToken;
+//verify Session Cookie with firebase
 module.exports.verifyCookie = verifyCookie;
+//used by ApolloServer to define context of the app. Runs on every request
+module.exports.getContext = getContext;
+//can be used in resolvers, as a wrapper over the real resolver, when this action is restricted to logged users
+module.exports.requireUser = requireUser;
+//same as above, but restricted to guest users
+module.exports.requireGuestUser = requireGuestUser;

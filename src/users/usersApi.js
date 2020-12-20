@@ -11,6 +11,7 @@ function getUidFromToken (admin, idToken){
 module.exports.addUser = async (data, context) => {
   const { email, fullName, username, country, socialId, birthDate } = data;
   const { uid } = context;
+  console.log(context)
   const providerId = context.firebase.sign_in_provider;
   try {
     //Check that email is not registered yet

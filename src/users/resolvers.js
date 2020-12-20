@@ -31,14 +31,10 @@ module.exports = (admin)=>{
         },
         currentUser: async (_, {idToken}, context)=>{
           try {
-            console.log('hello!, looking for', idToken)
-            console.log('context', context)
             const userAuth = await verifyCookie(idToken);
-            console.log(userAuth);
             //return user || new ValidationError(errorsDictionary.FAILED_AUTH);
             const userDoc = await admin.firestore().doc(`users/${userAuth.user_id}`).get();
             const user = userDoc.data();
-            console.log(user);
             return user || new ValidationError(errorsDictionary.USER_UNKNOWN);
           } catch (error) {
             console.log("nope! we are not doing this");
