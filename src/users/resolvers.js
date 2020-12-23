@@ -4,7 +4,7 @@ const { requireUser } = require('../auth');
 const uuid = require('uuid');
 const moment = require ('moment');
 const errorsDictionary = require('./errorsDictionary');
-const { addUser, deleteUser } = require("./usersApi");
+const { addUser, deleteUser, logoutUser } = require("./usersApi");
 const { validateToken, verifyCookie } = require("../auth");
 
 module.exports = (admin)=>{
@@ -69,6 +69,9 @@ module.exports = (admin)=>{
           return requireUser(args, context, deleteUser);
           return deleteUser(args);
         },
+        logoutUser: async() =>{
+          return logoutUser();
+        }
       },
     };
 }

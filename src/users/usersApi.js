@@ -1,8 +1,10 @@
 const { ApolloError, ValidationError } = require("apollo-server-express");
+const { auth } = require("firebase-admin");
 //const uuid = require("uuid");
 const admin = require("firebase-admin");
 const moment = require("moment");
 const errorsDictionary = require("./errorsDictionary");
+const { clearCookie } = require("../auth");
 
 function getUidFromToken (admin, idToken){
   return admin.auth().verifyIdToken(idToken);
@@ -58,6 +60,11 @@ module.exports.deleteUser = async (data) =>{
   catch{
     throw new ApolloError(error);
   }
+}
+
+module.exports.logoutUser = async() =>{
+  return clearCookie();
+
 }
 // const functions = require("firebase-functions");
 // module.exports.getCurrentUser = async (admin, data)=>{

@@ -22,6 +22,11 @@ module.exports = [
       thumbnailUrl:String
     }
 
+    type Payload {
+      status: String
+      message: String
+    }
+
     type Query {
       users: [User!]!
       user(id:ID): User
@@ -32,6 +37,7 @@ module.exports = [
     
     type Mutation {
       addUser(fullName: String!, username: String!, email: String!, country: String!, socialId:String, birthDate:Date): User
+      logoutUser: Payload
       deleteUser(id: ID!): User
     }
   `,

@@ -1,8 +1,9 @@
 const admin = require("firebase-admin");
 const errorsDictionary = require("../users/errorsDictionary")
+const {SUCCESS} = require("../constants/status");
 
 //const functions = require("firebase-functions");
-
+let serverResponse;
 function decodeBearer(bearer) {
     return bearer ? bearer.split(" ")[1]: '';  
 }
@@ -13,7 +14,7 @@ function validateToken(token){
 }
 
 async function getContext ({ req, res }) {
-    
+    serverResponse = res;
     const chomp = req.cookies.chomp || "";
     console.log('check chomp:\n', req.cookies)
     const authToken = decodeBearer(req.headers.authorization);
@@ -104,6 +105,15 @@ function requireGuestUser (args, context, resolverAction) {
   }
 };
 
+function clearCookie(){
+  try {
+    serverResponse.clearCookie("chomp");
+  } catch (error) {
+    return {status: ERROR, message:errorsDictionary.USER_UNKNOWN}
+  }
+  return { status: SUCCESS };
+}
+
 //returns promise after validating a token
 module.exports.validateToken = validateToken;
 //verify Session Cookie with firebase
@@ -114,3 +124,5 @@ module.exports.getContext = getContext;
 module.exports.requireUser = requireUser;
 //same as above, but restricted to guest users
 module.exports.requireGuestUser = requireGuestUser;
+//clean cookie for logout
+module.exports.clearCookie = clearCookie;
