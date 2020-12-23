@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node -r dotenv/config ./src/index.js",
-    "deploy:staging": "firebase use mokuroku-staging && firebase deploy --token $FIREBASE_TOKEN --only functions:graphql",
+    "deploy:staging": "firebase use mokuroku-staging && firebase init && firebase deploy --token $FIREBASE_TOKEN --only functions:graphql",
     "deploy": "firebase use default && firebase deploy --token $FIREBASE_TOKEN --only functions:graphql"
   },
   "keywords": [],
