@@ -16,11 +16,11 @@ function validateToken(token){
 async function getContext ({ req, res }) {
     serverResponse = res;
     const chomp = req.cookies.chomp || "";
-    console.log('check chomp:\n', req.cookies)
+    //console.log('check chomp:\n', req.cookies)
     const authToken = decodeBearer(req.headers.authorization);
     let user = {};
     if (chomp) {
-        console.log('chomp available!')
+        //console.log('chomp available!')
         user = await verifyCookie(chomp);
     } else if (authToken) {
       try {
@@ -87,9 +87,9 @@ function verifyCookie (verifySessionCookie){
       });
 }
 
-function requireUser (args, context, resolverAction) {
+function requireUser (_, args, context, resolverAction) {
   if (context && context.uid) {
-    return resolverAction(args, context);
+    return resolverAction(_, args, context);
   }
   else{
       throw new Error(errorsDictionary.USER_UNKNOWN);
