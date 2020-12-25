@@ -2,11 +2,17 @@ const { ApolloError, ValidationError } = require("apollo-server-express");
 const errorsDictionary = require("./errorsDictionary");
 const admin = require("firebase-admin");
 const { clearCookie, requireUser } = require("../auth");
+const {validateEmail, validateName, validateUsername} = require("../utils/validations")
+const moment = require("moment");
 
 const addUser = async (_, args, context) => {
   const { email, fullName, username, country, socialId, birthDate } = args;
   const { uid } = context;
   const providerId = context.firebase.sign_in_provider;
+  if(!validateEmail(email) || !validateName(fullName) || !validateUsername(username)){
+    throw new ValidationError(errorsDictionary.PAYLOAD_WRONG_FORMAT);
+  }
+
   try {
     //Check that email is not registered yet
     const existantEmailDoc = await admin.firestore().collection("users").where("email", "==", email).get();

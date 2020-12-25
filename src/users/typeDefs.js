@@ -1,10 +1,10 @@
 const types = `
   type User {
       id:ID!
-      username: String
-      fullName: String
+      username: String!
+      fullName: String!
       email: String!
-      country: String
+      country: String!
       socialId: String
       providerId: String
       birthDate: Date
