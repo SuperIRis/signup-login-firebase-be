@@ -1,7 +1,7 @@
 {
   "name": "mokuroku-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "BE app for mokuroku",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,17 +9,22 @@
     "deploy:staging": "firebase use mokuroku-staging && firebase deploy --token $FIREBASE_TOKEN --only functions:graphql",
     "deploy": "firebase use default && firebase deploy --token $FIREBASE_TOKEN --only functions:graphql"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/mokuroku1/mokuroku-commons.git"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@mokuroku/mokuroku-commons": "^1.0.5",
     "apollo-server-express": "^2.16.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
-    "firebase-admin": "^9.1.0",
+    "firebase-admin": "^9.4.2",
     "firebase-functions": "^3.9.1",
     "graphql": "^15.3.0",
     "graphql-scalars": "^1.2.6",

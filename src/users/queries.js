@@ -1,4 +1,5 @@
 const { ApolloError, ValidationError } = require("apollo-server-express");
+const { errorsDictionary } = require("@mokuroku/mokuroku-commons/dictionaries/errors");
 const admin = require("firebase-admin");
 const { verifyCookie } = require("../auth");
 

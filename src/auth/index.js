@@ -1,6 +1,6 @@
 const admin = require("firebase-admin");
-const errorsDictionary = require("../users/errorsDictionary")
-const {SUCCESS} = require("../constants/status");
+const { errorsDictionary } = require("@mokuroku/mokuroku-commons/dictionaries/errors");
+const { SUCCESS_STATUS } = require("@mokuroku/mokuroku-commons/dictionaries/statuses");
 
 //const functions = require("firebase-functions");
 let serverResponse;
@@ -111,7 +111,7 @@ function clearCookie(){
   } catch (error) {
     return {status: ERROR, message:errorsDictionary.USER_UNKNOWN}
   }
-  return { status: SUCCESS };
+  return { status: SUCCESS_STATUS };
 }
 
 //returns promise after validating a token
