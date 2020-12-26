@@ -8,8 +8,8 @@ const validateName = (name)=>{
 }
 
 const validateUsername = (username) => {
-    const re = /^(?=[a-z_\d]*[a-z])[a-z_\d]{6,25}$/;
-    return re.test(String(username));
+    const re = /^(?=[a-z_\-.\d]*[a-z])[a-z_\-.\d]{6,25}$/;
+    return re.test(String(username).toLowerCase());
 };
 
 module.exports.validateEmail = validateEmail;
