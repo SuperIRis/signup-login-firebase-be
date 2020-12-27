@@ -26,6 +26,8 @@ const corsOptions = {
     "https://mokuroku-staging-aad4c.web.app",
     "http://mokuroku.me",
     "https://mokuroku.me",
+    "https://staging.mokuroku.me",
+    "https://staging.mokuroku.me/",
   ],
   credentials: true,
 };
