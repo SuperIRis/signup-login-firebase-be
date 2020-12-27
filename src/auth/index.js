@@ -16,7 +16,7 @@ function validateToken(token){
 async function getContext ({ req, res }) {
     serverResponse = res;
     const chomp = req.cookies.chomp || "";
-    //console.log('check chomp:\n', req.cookies)
+    console.log('check chomp:\n', req.cookies)
     const authToken = decodeBearer(req.headers.authorization);
     let user = {};
     if (chomp) {
