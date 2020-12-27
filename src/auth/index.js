@@ -15,13 +15,13 @@ function validateToken(token){
 
 async function getContext ({ req, res }) {
     serverResponse = res;
-    const chomp = req.cookies.__session || "";
-    console.log('check chomp:\n', req.cookies)
+    const __session = req.cookies.__session || "";
+    console.log('check __session:\n', req.cookies)
     const authToken = decodeBearer(req.headers.authorization);
     let user = {};
-    if (chomp) {
-        //console.log('chomp available!')
-        user = await verifyCookie(chomp);
+    if (__session) {
+      //console.log('__session available!')
+      user = await verifyCookie(__session);
     } else if (authToken) {
       try {
         //user = await validateToken(authToken);
