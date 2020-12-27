@@ -15,7 +15,7 @@ function validateToken(token){
 
 async function getContext ({ req, res }) {
     serverResponse = res;
-    const chomp = req.cookies.chomp || "";
+    const chomp = req.cookies.__session || "";
     console.log('check chomp:\n', req.cookies)
     const authToken = decodeBearer(req.headers.authorization);
     let user = {};
@@ -35,7 +35,7 @@ async function getContext ({ req, res }) {
               //we don't have https in localhost for now
               options.secure = false;
             }
-            res.cookie("chomp", sessionCookie, options);
+            res.cookie("__session", sessionCookie, options);
             user = await validateToken(authToken);
           },
           (error) => {
@@ -107,7 +107,7 @@ function requireGuestUser (args, context, resolverAction) {
 
 function clearCookie(){
   try {
-    serverResponse.clearCookie("chomp");
+    serverResponse.clearCookie("__session");
   } catch (error) {
     return {status: ERROR, message:errorsDictionary.USER_UNKNOWN}
   }
