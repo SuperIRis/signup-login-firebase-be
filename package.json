@@ -4,7 +4,7 @@
   "description": "BE app for mokuroku",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node -r dotenv/config ./src/index.js",
     "deploy:staging": "firebase use mokuroku-staging && firebase deploy --token $FIREBASE_TOKEN --only functions:graphql",
     "deploy": "firebase use default && firebase deploy --token $FIREBASE_TOKEN --only functions:graphql"
@@ -31,5 +31,8 @@
     "moment": "^2.27.0",
     "uuid": "^8.3.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "firebase-functions-test": "^0.2.3",
+    "jest": "^26.6.3"
+  }
 }

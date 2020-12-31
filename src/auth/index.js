@@ -1,6 +1,6 @@
 const admin = require("firebase-admin");
 const { errorsDictionary } = require("@mokuroku/mokuroku-commons/dictionaries/errors");
-const { SUCCESS_STATUS } = require("@mokuroku/mokuroku-commons/dictionaries/statuses");
+const { SUCCESS_STATUS, ERROR } = require("@mokuroku/mokuroku-commons/dictionaries/statuses");
 
 //const functions = require("firebase-functions");
 let serverResponse;
@@ -9,18 +9,16 @@ function decodeBearer(bearer) {
 }
 
 function validateToken(token){
-    console.log('validate token', token, '\n')
     return admin.auth().verifyIdToken(token);
 }
 
 async function getContext ({ req, res }) {
     serverResponse = res;
     const __session = req.cookies.__session || "";
-    console.log('check __session:\n', req.cookies)
+    //console.log('check __session:\n', req.cookies)
     const authToken = decodeBearer(req.headers.authorization);
     let user = {};
     if (__session) {
-      //console.log('__session available!')
       user = await verifyCookie(__session);
     } else if (authToken) {
       try {
@@ -62,9 +60,10 @@ async function getContext ({ req, res }) {
                     */
       } catch (error) {
         console.error("Error on auth", error);
+        return error;
       }
     } 
-    console.log('valid user', user)
+    //console.log('valid user', user)
     return user;
 };
 
@@ -87,24 +86,6 @@ function verifyCookie (verifySessionCookie){
       });
 }
 
-function requireUser (_, args, context, resolverAction) {
-  if (context && context.uid) {
-    return resolverAction(_, args, context);
-  }
-  else{
-      throw new Error(errorsDictionary.USER_UNKNOWN);
-  }
-};
-
-function requireGuestUser (args, context, resolverAction) {
-  if (!context || !context.uid) {
-    return resolverAction(args, context);
-  }
-  else{
-      throw new Error(errorsDictionary.USER_UNKNOWN);
-  }
-};
-
 function clearCookie(){
   try {
     serverResponse.clearCookie("__session");
@@ -120,9 +101,5 @@ module.exports.validateToken = validateToken;
 module.exports.verifyCookie = verifyCookie;
 //used by ApolloServer to define context of the app. Runs on every request
 module.exports.getContext = getContext;
-//can be used in resolvers, as a wrapper over the real resolver, when this action is restricted to logged users
-module.exports.requireUser = requireUser;
-//same as above, but restricted to guest users
-module.exports.requireGuestUser = requireGuestUser;
 //clean cookie for logout
 module.exports.clearCookie = clearCookie;

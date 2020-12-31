@@ -1,7 +1,7 @@
 const { ApolloError, ValidationError } = require("apollo-server-express");
 const { errorsDictionary } = require("@mokuroku/mokuroku-commons/dictionaries/errors");
 const admin = require("firebase-admin");
-const { clearCookie, requireUser } = require("../auth");
+const { clearCookie } = require("../auth");
 const {validateEmail, validateName, validateUsername} = require("../utils/validations")
 const moment = require("moment");
 
@@ -55,7 +55,7 @@ const deleteUser = async (_, args, context) => {
 };
 
 const logoutUser = async (_, args, context) => {
-    return requireUser(_, args, context, clearCookie);
+    return clearCookie();
 };
 
 module.exports.addUser = addUser;
