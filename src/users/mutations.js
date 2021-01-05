@@ -17,11 +17,13 @@ const addUser = async (_, args, context) => {
     //Check that email is not registered yet
     const existantEmailDoc = await admin.firestore().collection("users").where("email", "==", email).get();
     if (!existantEmailDoc.empty) {
+      clearCookie(); //clean Firebase cookie, as signup was unsuccessful
       throw new ValidationError(errorsDictionary.EMAIL_ALREADY_IN_USE);
     }
     //Check that username is not registered yet
     const existantUsernameDoc = await admin.firestore().collection("users").where("username", "==", username).get();
     if (!existantUsernameDoc.empty) {
+      clearCookie(); //clean Firebase cookie, as signup was unsuccessful
       throw new ValidationError(errorsDictionary.USERNAME_ALREADY_IN_USE);
     }
     //if it doesn´t exist, create users
@@ -38,8 +40,15 @@ const addUser = async (_, args, context) => {
     });
     const userDoc = await admin.firestore().doc(`users/${uid}`).get();
     const user = userDoc.data();
-    return user || new ValidationError(errorsDictionary.SERVER_ERROR);
+    if(user){
+      return user;
+    }
+    else{
+      clearCookie(); //clean Firebase cookie, as signup was unsuccessful
+      return new ValidationError(errorsDictionary.SERVER_ERROR);
+    }
   } catch (error) {
+    clearCookie(); //clean Firebase cookie, as signup was unsuccessful
     throw new ApolloError(error);
   }
 };

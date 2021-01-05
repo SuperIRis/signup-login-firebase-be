@@ -81,6 +81,7 @@ function verifyCookie (verifySessionCookie){
       .verifySessionCookie(verifySessionCookie, true /** checkRevoked */)
       .catch((error) => {
         // Session cookie is unavailable or invalid. Force user to login.
+        console.log('cookie:', verifySessionCookie)
         console.log('Error on verify cookie, did you properly logout while debugging?', error)
         clearCookie();
         throw new Error(errorsDictionary.USER_UNKNOWN);
