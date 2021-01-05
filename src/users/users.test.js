@@ -104,7 +104,7 @@ describe('Users Mutations', () => {
   it("Logout: Call clear cookie", (done) => {
     logoutUser(null, {id:'123'}, context)
       .then((userData) => {
-        expect(auth.clearCookie.mock.calls.length).toBe(1);
+        expect(auth.clearCookie.mock.calls.length).toBe(5);
         done();
       });
   });
